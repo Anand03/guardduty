@@ -1,5 +1,5 @@
 resource "aws_guardduty_detector" "guardduty_detector" {
-  provider = aws.security
+  provider = aws.dst
   enable   = true
 
   datasources {
@@ -27,7 +27,7 @@ resource "aws_guardduty_organization_admin_account" "guardduty_admin" {
 }
 
 resource "aws_guardduty_organization_configuration" "organization_configuration" {
-  provider    = aws.security
+  provider    = aws.dst
   depends_on  = [aws_guardduty_organization_admin_account.guardduty_admin]
   auto_enable = true
   detector_id = aws_guardduty_detector.guardduty_detector.id
@@ -59,11 +59,9 @@ locals {
 }
 
 resource "aws_guardduty_member" "members" {
-  provider = aws.security
-
+  provider   = aws.dst
   depends_on = [aws_guardduty_organization_configuration.organization_configuration]
-
-  count = length(local.account_ids)
+  count      = length(local.account_ids)
 
   detector_id                = aws_guardduty_detector.guardduty_detector.id
   account_id                 = local.account_ids[count.index]
@@ -79,9 +77,8 @@ resource "aws_guardduty_member" "members" {
 }
 
 resource "aws_guardduty_publishing_destination" "pub_dest" {
-  provider   = aws.security
-  depends_on = [aws_guardduty_organization_admin_account.guardduty_admin]
-
+  provider        = aws.dst
+  depends_on      = [aws_guardduty_organization_admin_account.guardduty_admin]
   detector_id     = aws_guardduty_detector.guardduty_detector.id
   destination_arn = data.aws_s3_bucket.guardduty.arn
   kms_key_arn     = data.aws_kms_alias.guardduty.target_key_arn

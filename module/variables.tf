@@ -15,20 +15,21 @@ variable "malware_protection_status" {
 
 variable "delegated_admin_acc_id" {
   type    = string
-  default = "<account id for delegated admin account>"
+  default = ""
 }
 
 variable "delegated_admin_acc_email" {
   type    = string
-  default = "<email id of delegated admin acc>"
+  default = ""
 }
 
+# assuming bucket is in place
 variable "guardduty_bucket" {
   type    = string
-  default = "<bucket name to store findings>"
+  default = ""
 }
 
 variable "kms_key_alias" {
   type    = string
-  default = "<alias for kms key>"
+  default = ""
 }
